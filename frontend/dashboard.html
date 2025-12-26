@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="All Looking Eye - AI-Powered Anomaly Detection Dashboard">
+    <title>All Looking Eye - Anomaly Detection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="dashboard-page">
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="logo-icon">👁️</div>
+            <span>All Looking Eye</span>
+        </div>
+        <div class="nav-tagline">AI-Powered Anomaly Detection</div>
+    </nav>
+
+    <main class="dashboard">
+        <div class="dashboard-header">
+            <h1>Anomaly Detection System</h1>
+            <p>Detect violence and anomalies using AI-powered video analysis</p>
+        </div>
+
+        <!-- Email Setup Section -->
+        <section class="email-section" id="emailSection">
+            <div class="email-card">
+                <div class="email-icon">📧</div>
+                <div class="email-content">
+                    <h3>Alert Notifications</h3>
+                    <p class="email-description">
+                        Enter your email to receive instant alerts when anomalies are detected.
+                        <strong>Highly recommended for CCTV monitoring</strong> — you'll get a 5-second video clip
+                        (2.5s before and after the detection) directly to your inbox, along with the timestamp.
+                    </p>
+
+                    <div class="email-input-group" id="emailInputGroup">
+                        <div class="form-group">
+                            <input type="email" id="alertEmail" placeholder="Enter your email address" required>
+                        </div>
+                        <button class="btn btn-primary" id="saveEmailBtn">Save Email</button>
+                    </div>
+
+                    <div class="email-saved hidden" id="emailSaved">
+                        <div class="saved-email">
+                            <span class="email-label">Alerts will be sent to:</span>
+                            <span class="email-value" id="currentEmail">user@example.com</span>
+                        </div>
+                        <button class="btn btn-ghost" id="editEmailBtn">Change</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="detection-modes">
+            <div class="mode-card" id="uploadMode">
+                <div class="mode-icon">📁</div>
+                <h3>Upload Video</h3>
+                <p>Upload a video file for analysis. Supports MP4, AVI, MOV formats.</p>
+                <button class="btn btn-primary">Select Video</button>
+            </div>
+
+            <div class="mode-card" id="cameraMode">
+                <div class="mode-icon">📹</div>
+                <h3>Device Camera</h3>
+                <p>Use your webcam for real-time anomaly detection.</p>
+                <button class="btn btn-primary">Start Camera</button>
+            </div>
+
+            <div class="mode-card" id="cctvMode">
+                <div class="mode-icon">📡</div>
+                <h3>CCTV Stream</h3>
+                <p>Connect to a CCTV camera using RTSP or HTTP stream URL.</p>
+                <button class="btn btn-primary">Connect</button>
+            </div>
+        </div>
+
+        <!-- How It Works Section -->
+        <section class="info-section">
+            <h2>How It Works</h2>
+            <div class="info-cards">
+                <div class="info-card">
+                    <div class="info-icon">🎯</div>
+                    <h4>Pose Detection</h4>
+                    <p>Our LSTM model analyzes body movements to detect violent or abnormal behavior patterns.</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">🧠</div>
+                    <h4>Deep Learning</h4>
+                    <p>Advanced neural networks process 150-frame sequences for accurate real-time predictions.</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">⚡</div>
+                    <h4>Real-Time Alerts</h4>
+                    <p>Instant email notifications with video clips when anomalies are detected.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upload Modal -->
+        <div class="modal hidden" id="uploadModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Upload Video</h2>
+                    <button class="modal-close" id="closeUploadModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-icon">📁</div>
+                        <p>Drag and drop a video file here</p>
+                        <span>or</span>
+                        <button class="btn btn-secondary" id="selectFileBtn">Browse Files</button>
+                        <input type="file" id="videoInput" accept="video/*" hidden>
+                    </div>
+                    <div class="upload-progress hidden" id="uploadProgress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <p id="progressText">Processing...</p>
+                    </div>
+                    <div class="upload-result hidden" id="uploadResult">
+                        <div class="result-header">
+                            <span class="result-status" id="resultStatus"></span>
+                            <span class="result-score" id="resultScore"></span>
+                        </div>
+                        <div class="video-preview">
+                            <video id="previewVideo" controls class="preview-player">
+                                Your browser does not support video playback.
+                            </video>
+                        </div>
+                        <div class="result-actions">
+                            <button class="btn btn-primary" id="downloadBtn">⬇️ Download Video</button>
+                            <button class="btn btn-secondary" id="newUploadBtn">Upload Another</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Camera Modal -->
+        <div class="modal hidden" id="cameraModal">
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h2>Camera Detection</h2>
+                    <button class="modal-close" id="closeCameraModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="video-container">
+                        <img id="cameraStream" class="video-stream" alt="Camera stream">
+                        <div class="stream-overlay hidden" id="streamOverlay">
+                            <div class="overlay-status">
+                                <span class="status-indicator"></span>
+                                <span class="status-text">Connecting...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="camera-controls">
+                        <button class="btn btn-danger" id="stopCameraBtn">Stop Detection</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CCTV Modal -->
+        <div class="modal hidden" id="cctvModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Connect to CCTV</h2>
+                    <button class="modal-close" id="closeCctvModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="cctv-info">
+                        <p>💡 <strong>Tip:</strong> For continuous monitoring, we'll send you an email with a 5-second
+                            clip whenever an anomaly is detected.</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="cctvUrl">CCTV Stream URL</label>
+                        <input type="text" id="cctvUrl" placeholder="rtsp://username:password@ip:port/stream">
+                        <small>Supports RTSP, HTTP, and HLS streams</small>
+                    </div>
+                    <button class="btn btn-primary" id="connectCctvBtn">Connect & Start Detection</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CCTV Stream Modal -->
+        <div class="modal hidden" id="cctvStreamModal">
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h2>CCTV Detection</h2>
+                    <button class="modal-close" id="closeCctvStreamModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="video-container">
+                        <img id="cctvStream" class="video-stream" alt="CCTV stream">
+                    </div>
+                    <div class="camera-controls">
+                        <button class="btn btn-danger" id="stopCctvBtn">Stop Detection</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detection History -->
+        <section class="history-section">
+            <div class="section-header">
+                <h2>Detection History</h2>
+                <button class="btn btn-ghost" id="refreshHistory">🔄 Refresh</button>
+            </div>
+            <div class="history-table-container">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Source</th>
+                            <th>Status</th>
+                            <th>Confidence</th>
+                            <th>Alert Sent</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody">
+                        <tr class="empty-row">
+                            <td colspan="5">No detection history yet</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>All Looking Eye Anomaly Detection System • Powered by LSTM AI Model</p>
+    </footer>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="js/detection.js"></script>
+</body>
+
+</html>
