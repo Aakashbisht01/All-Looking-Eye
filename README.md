@@ -72,7 +72,7 @@ Download the trained models and place them in the project root:
 - `final_model_normalized.keras` (Primary model)
 - `best_model_81acc.keras` (Backup model with 81% accuracy)
 
-> ⚠️ Models are not included in the repository due to size. Contact the maintainer or train your own.
+> ⚠️ Models are not included in the repository. Contact the maintainer or train your own.
 
 ### 5. Configure Environment
 Create a `.env` file in the project root:
@@ -194,6 +194,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-<p align="center">
-  Made with ❤️ for security and safety
-</p>
+
